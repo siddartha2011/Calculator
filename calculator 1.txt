@@ -1,0 +1,102 @@
+import java.util.ArrayList;
+import java.util.List;
+
+// 1. Room Class: Represents a single room in the hotel.
+class Room {
+    private int roomNumber;
+    private String type; // e.g., "Single", "Double", "Suite"
+    private double price;
+    private boolean isAvailable;
+
+    public Room(int roomNumber, String type, double price) {
+        this.roomNumber = roomNumber;
+        this.type = type;
+        this.price = price;
+        this.isAvailable = true; // Initially all rooms are available
+    }
+
+    // Getters
+    public int getRoomNumber() { return roomNumber; }
+    public String getType() { return type; }
+    public double getPrice() { return price; }
+    public boolean isAvailable() { return isAvailable; }
+
+    // Setter for availability (Encapsulation)
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    @Override
+    public String toString() {
+        return "Room " + roomNumber + " (" + type + ") - $" + price + 
+               " | Status: " + (isAvailable ? "AVAILABLE" : "BOOKED");
+    }
+}
+
+// 2. Hotel Class: Manages the collection of rooms and booking logic.
+class Hotel {
+    private List<Room> rooms;
+
+    public Hotel() {
+        rooms = new ArrayList<>();
+        // Initialize rooms
+        rooms.add(new Room(101, "Single", 50.00));
+        rooms.add(new Room(102, "Double", 75.00));
+        rooms.add(new Room(201, "Suite", 150.00));
+        rooms.add(new Room(202, "Double", 75.00));
+    }
+
+    public List<Room> getAvailableRooms() {
+        List<Room> available = new ArrayList<>();
+        for (Room room : rooms) {
+            if (room.isAvailable()) {
+                available.add(room);
+            }
+        }
+        return available;
+    }
+
+    public boolean bookRoom(int roomNumber) {
+        for (Room room : rooms) {
+            if (room.getRoomNumber() == roomNumber) {
+                if (room.isAvailable()) {
+                    room.setAvailable(false); // Update availability
+                    System.out.println("✅ Room " + roomNumber + " successfully booked.");
+                    return true;
+                } else {
+                    System.out.println("❌ Room " + roomNumber + " is already booked.");
+                    return false;
+                }
+            }
+        }
+        System.out.println("❌ Room " + roomNumber + " not found.");
+        return false;
+    }
+}
+
+// 3. Main Class: Demonstrates the system usage.
+public class HotelBookingSystem {
+    public static void main(String[] args) {
+        Hotel myHotel = new Hotel();
+
+        System.out.println("--- 1. Initial Available Rooms ---");
+        for (Room room : myHotel.getAvailableRooms()) {
+            System.out.println(room);
+        }
+
+        System.out.println("\n--- 2. Booking Attempt ---");
+        // Attempt to book room 102
+        myHotel.bookRoom(102); 
+        
+        // Attempt to book the same room again
+        myHotel.bookRoom(102); 
+        
+        // Attempt to book an available room
+        myHotel.bookRoom(201); 
+
+        System.out.println("\n--- 3. Final Available Rooms ---");
+        for (Room room : myHotel.getAvailableRooms()) {
+            System.out.println(room);
+        }
+    }
+}
